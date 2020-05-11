@@ -2,6 +2,21 @@ from django.db import models
 from django.utils import timezone
 
 # Create your models here.
+class Service(models.Model):
+    name = models.CharField(max_length=50)
+    price = models.DecimalField(decimal_places=2)
+
+    def __str__(self):
+        return f'{self.name}'
+
+class Category(models.Model):
+    name = models.CharField(max_length=50)
+    services = models.ForeignKey(Service, on_delete=models.CASCADE)
+    document_required = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'{self.name}'
+
 class ServiceProvider(models.Model):
     """Model for service providers"""
     name = models.CharField(max_length=50)
@@ -11,7 +26,7 @@ class ServiceProvider(models.Model):
     email = models.EmailField(max_length=100)
     service_rendered = models.CharField(max_length=50)
     service_category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    picture = ImageField(upload_to=None, height_field=None, width_field=None)
+    picture = models.ImageField(upload_to=None, height_field=None, width_field=None, max_length=50)
     description = models.TextField(max_length=200)
     year_of_experience = models.IntegerField()
     year_of_establishement = models.DateField(default=timezone.now().date())
@@ -24,11 +39,4 @@ class ServiceProvider(models.Model):
     def __str__(self):
         return f'{self.name}'
     
-class Category(models.Model):
-    name = models.CharField(max_length=50)
-    services = models.ForeignKey(Service, on_delete=models.CASCADE)
-    document_required = models.BooleanField(default=False)
-
-    def __str__(self):
-        return f'{self.name}'
     
