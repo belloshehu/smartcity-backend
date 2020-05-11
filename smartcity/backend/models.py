@@ -1,6 +1,11 @@
 from django.db import models
 from django.utils import timezone
 
+CONTINENTS = [
+    ('Africa','Africa'),
+    ('Europe','Europe'),
+    ('Asia','Asia'),
+]
 # Create your models here.
 class Service(models.Model):
     name = models.CharField(max_length=50)
@@ -14,8 +19,27 @@ class Category(models.Model):
     services = models.ForeignKey(Service, on_delete=models.CASCADE)
     document_required = models.BooleanField(default=False)
 
+class Country(models.Model):
+    name = models.CharField(max_length=50)
+    continent = models.CharField(choices=CONTINENTS, max_length=20)
+
     def __str__(self):
         return f'{self.name}'
+
+class State(models.Model):
+    name = models.CharField(max_length=50)
+    country = models.ForeignKey(Country, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.name}'
+
+class LocalGovernmentArea(models.Model):
+    name = models.CharField(max_length=50)
+    state = models.ForeignKey(State, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.name}'
+
 
 class ServiceProvider(models.Model):
     """Model for service providers"""
@@ -30,7 +54,7 @@ class ServiceProvider(models.Model):
     description = models.TextField(max_length=200)
     year_of_experience = models.IntegerField()
     year_of_establishement = models.DateField(default=timezone.now().date())
-    state = models.ForeignKey(States, on_delete=models.CASCADE)
+    state = models.ForeignKey(State, on_delete=models.CASCADE)
     local_government_are = models.ForeignKey(LocalGovernmentArea, on_delete=models.CASCADE)
     country = models.ForeignKey(Country, on_delete=models.CASCADE)
     supporting_document = models.FileField()
