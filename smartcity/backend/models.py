@@ -24,4 +24,11 @@ class ServiceProvider(models.Model):
     def __str__(self):
         return f'{self.name}'
     
+class Category(models.Model):
+    name = models.CharField(max_length=50)
+    services = models.ForeignKey(Service, on_delete=models.CASCADE)
+    document_required = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'{self.name}'
     
